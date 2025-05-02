@@ -1,14 +1,40 @@
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { posts } from "../../data/posts";
 import GlobalHeader from "../../components/Headers/GlobalHeader";
 import HomeStory from "../../components/Headers/HomeStory";
 import AppAreaView from "../../components/View/safeAreaView";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  decreaseLike,
+  increaseLike,
+} from "../../store/homeReducers/homeReducer";
 
 const HomeScreen = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const [likedPosts, setLikedPosts] = useState({});
+
+  const increaseLikes = useSelector(
+    (state) => state.increaseTotalLikes.totalLike
+  );
+
+  const handleLike = (postId: any) => {
+    const isLiked = likedPosts[postId];
+
+    if (isLiked) {
+      dispatch(decreaseLike());
+    } else {
+      dispatch(increaseLike());
+    }
+
+    setLikedPosts((prev) => ({
+      ...prev,
+      [postId]: !isLiked,
+    }));
+  };
 
   const renderItem = ({ item }) => (
     <View
@@ -46,7 +72,7 @@ const HomeScreen = () => {
             style={{
               width: "100%",
               height: "100%",
-              borderRadius:100,
+              borderRadius: 100,
               resizeMode: "cover",
             }}
           />
@@ -76,18 +102,23 @@ const HomeScreen = () => {
       >
         {/* Like */}
         <TouchableOpacity
+          onPress={() => handleLike(item.id)}
           style={{
             flexDirection: "row",
             alignItems: "center",
             marginRight: 20,
           }}
         >
-          <FontAwesome name="heart-o" size={22} color="black" />
+          {likedPosts[item.id] ? (
+            <FontAwesome name="heart" size={24} color="red" />
+          ) : (
+            <FontAwesome name="heart-o" size={22} color="black" />
+          )}
           <Text style={{ marginLeft: 5, color: "black", fontSize: 14 }}>
-            {item.likes}
+            {/* {item.likes} */}
+            {increaseLikes}
           </Text>
         </TouchableOpacity>
-
         {/* Comment */}
         <TouchableOpacity
           style={{
@@ -101,8 +132,7 @@ const HomeScreen = () => {
             {item.comments}
           </Text>
         </TouchableOpacity>
-
-        {/* Share */}
+        {/* Share */}{" "}
         <TouchableOpacity
           style={{ flexDirection: "row", alignItems: "center" }}
         >
@@ -153,17 +183,17 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
-  // const postUrl = "https://dummyjson.com/posts";
-  // const [posts, setPosts] = useState([]);
-  // const getData = async () => {
-  //   try {
-  //     const response = await axios.get(postUrl);
-  //     console.log("=======>>>>>>", response.data);
-  //     setPosts(response.data.posts);
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   getData();
-  // }, []);
+// const postUrl = "https://dummyjson.com/posts";
+// const [posts, setPosts] = useState([]);
+// const getData = async () => {
+//   try {
+//     const response = await axios.get(postUrl);
+//     console.log("=======>>>>>>", response.data);
+//     setPosts(response.data.posts);
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//   }
+// };
+// useEffect(() => {
+//   getData();
+// }, []);

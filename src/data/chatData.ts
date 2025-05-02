@@ -1,14 +1,14 @@
 export const chatData = [
   {
     id: 1,
-    name: "Kaif",
+    name: "Jimmy",
     message: "Hey, what's up?",
     time: "2m",
     profile: "https://i.pravatar.cc/150?img=1",
   },
   {
     id: 2,
-    name: "Sana",
+    name: "Daizy",
     message: "Send me the pic!",
     time: "5m",
     profile: "https://i.pravatar.cc/150?img=2",

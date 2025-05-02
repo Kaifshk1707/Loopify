@@ -23,11 +23,9 @@ export default function App() {
 
   return (
     <Provider store={store}>
-
-
-    <NavigationContainer>
-      <MainAppStack />
-    </NavigationContainer>
+      <NavigationContainer>
+        <MainAppStack />
+      </NavigationContainer>
     </Provider>
   );
 }

@@ -10,13 +10,41 @@ import {
 } from "react-native";
 import { posts } from "../../data/posts";
 import { FontAwesome } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  increaseLike,
+  decreaseLike,
+} from "../../store/homeReducers/homeReducer";
 
 const SearchScreen = () => {
+  const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
+  const [likedPosts, setLikedPosts] = useState({});
 
+
+  const increaseLikes = useSelector(
+    (state) => state.increaseTotalLikes.totalLike
+  );
+  
   const filteredPosts = posts.filter((post) =>
     post.userName.toLowerCase().includes(searchText.toLowerCase())
   );
+
+
+  const handleLike = (postId) => {
+    const isLiked = likedPosts[postId];
+
+    if (isLiked) {
+      dispatch(decreaseLike());
+    } else {
+      dispatch(increaseLike());
+    }
+
+    setLikedPosts((prev) => ({
+      ...prev,
+      [postId]: !isLiked,
+    }));
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
@@ -78,15 +106,22 @@ const SearchScreen = () => {
       >
         {/* Like */}
         <TouchableOpacity
+          onPress={() => handleLike(item.id)}
           style={{
             flexDirection: "row",
             alignItems: "center",
             marginRight: 20,
           }}
         >
-          <FontAwesome name="heart-o" size={22} color="black" />
+          {likedPosts[item.id] ? (
+            <FontAwesome name="heart" size={24} color="red" />
+          ) : (
+            <FontAwesome name="heart-o" size={22} color="black" />
+          )}
+
           <Text style={{ marginLeft: 5, color: "black", fontSize: 14 }}>
-            {item.likes}
+            {/* {item.likes} */}
+            {increaseLikes}
           </Text>
         </TouchableOpacity>
 

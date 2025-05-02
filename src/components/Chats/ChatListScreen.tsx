@@ -9,11 +9,18 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { chatData } from "../../data/chatData";
-
+import { useNavigation } from "@react-navigation/native";
 
 const ChatListScreen = () => {
+  const navigation = useNavigation();
+
+  const handleGoChat = (item) => {
+    navigation.navigate("ChatScreen", { userName: item.name });
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
+      onPress={() => handleGoChat(item)}
       style={{
         flexDirection: "row",
         padding: 12,
