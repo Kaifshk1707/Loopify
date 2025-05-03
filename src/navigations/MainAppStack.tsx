@@ -5,6 +5,7 @@ import MainAppBottomTab from "./MainBottomTab";
 import HomeScreen from "../screens/Home/HomeScreen";
 import ChatListScreen from "../components/Chats/ChatListScreen";
 import ChatScreen from "../components/Chats/ChatScreen";
+import CreatePostScreen from "../components/Posts/CreatePostScreen";
 
 const Stack = createStackNavigator();
 
@@ -14,10 +15,11 @@ const MainAppStack = () => {
       // initialRouteName={"AuthStack"}
       screenOptions={{ headerShown: false }}
     >
-      <Stack.Screen name="AuthStack" component={AuthStack} />
+      {/* <Stack.Screen name="AuthStack" component={AuthStack} /> */}
       <Stack.Screen name="MainAppBottomTab" component={MainAppBottomTab} />
       <Stack.Screen name="ChatListScreen" component={ChatListScreen} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
+      <Stack.Screen name="CreatePostScreen" component={CreatePostScreen} />
     </Stack.Navigator>
   );
 };

@@ -1,4 +1,12 @@
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import React, { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { posts } from "../../data/posts";
@@ -11,11 +19,15 @@ import {
   decreaseLike,
   increaseLike,
 } from "../../store/homeReducers/homeReducer";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { MaterialIcons } from "@expo/vector-icons";
+import { globalColor } from "../../styles/globalColors";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [likedPosts, setLikedPosts] = useState({});
+  const [modal, setModal] = useState(false);
 
   const increaseLikes = useSelector(
     (state) => state.increaseTotalLikes.totalLike
@@ -132,7 +144,7 @@ const HomeScreen = () => {
             {item.comments}
           </Text>
         </TouchableOpacity>
-        {/* Share */}{" "}
+        {/* Share */}
         <TouchableOpacity
           style={{ flexDirection: "row", alignItems: "center" }}
         >
@@ -166,11 +178,86 @@ const HomeScreen = () => {
   return (
     <AppAreaView style={{ flex: 1 }}>
       <GlobalHeader
-        headerTitle={"Loopify"}
-        onPressCreate={() => {}}
+        headerTitle={"Instagram"}
+        onPressCreate={() => setModal(true)}
         onPressCheck={() => {}}
         onPressChat={() => navigation.navigate("ChatListScreen")}
       />
+      <Modal
+        visible={modal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setModal(false)}
+      >
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => setModal(false)}
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.4)",
+            justifyContent: "flex-end",
+          }}
+        >
+          <TouchableWithoutFeedback>
+            <View
+              style={{
+                width: "100%",
+                backgroundColor: "#fff",
+                paddingHorizontal: 20,
+                paddingTop: 15,
+                paddingBottom: 30,
+                borderTopLeftRadius: 15,
+                borderTopRightRadius: 15,
+              }}
+            >
+              <View style={{ alignItems: "center", marginBottom: 10 }}>
+                <View
+                  style={{
+                    width: 40,
+                    height: 5,
+                    backgroundColor: "#ccc",
+                    borderRadius: 3,
+                  }}
+                />
+              </View>
+              <Text
+                style={{ fontSize: 20, fontWeight: "bold", marginBottom: 15,alignSelf:"center" }}
+              >
+                Create
+              </Text>
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate("CreatePostScreen")}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingVertical: 15,
+                  borderColor: globalColor.gray,
+                  borderWidth: 0.3,
+                  padding: "2%",
+                  borderRadius: 10,
+                }}
+              >
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 18,
+                    backgroundColor: globalColor.lightGray,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 12,
+                  }}
+                >
+                  <AntDesign name="picture" size={30} color="black" />
+                </View>
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>Post</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+
       <HomeStory />
       <FlatList
         data={posts}
