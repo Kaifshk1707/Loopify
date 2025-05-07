@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "52991865686",
+    "project_id": "loopify-1d71a",
+    "storage_bucket": "loopify-1d71a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:52991865686:android:5855b4e6b302dc99305cf7",
+        "android_client_info": {
+          "package_name": "com.kaifshk17.Loopify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClKyqBm3TCzJebE6ASIIvjscK9UAuzneY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

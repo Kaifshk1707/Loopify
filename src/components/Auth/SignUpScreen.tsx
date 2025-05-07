@@ -8,37 +8,44 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import auth from "@react-native-firebase/auth"
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
 
-  const [name, setName] = useState("");
+  const [confimPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+
   const handleSignUp = () => {
-    if (name.trim() === "" || email.trim() === "" || password.trim() === "") {
-      Alert.alert("Error", "Please fill all fields");
-      return;
-    }
-
-    // Yaha aap Firebase ya API se sign up kara sakte ho
-
-    Alert.alert("Success", "Account created successfully");
-    navigation.navigate("MainAppBottomTab"); // Ya "SignInScreen" agar chaaho
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        Alert.alert("User has been created please now login");
+        navigation.navigate("SignInScreen");
+      })
+      .catch((err) => {
+        // console.log(err.nativeErrorMessage);
+        Alert.alert(err.message);
+      });
   };
+
+  // const handleSignUp = () => {
+  //   if (name.trim() === "" || email.trim() === "" || password.trim() === "") {
+  //     Alert.alert("Error", "Please fill all fields");
+  //     return;
+  //   }
+
+  //   // Yaha aap Firebase ya API se sign up kara sakte ho
+
+  //   Alert.alert("Success", "Account created successfully");
+  //   navigation.navigate("MainAppBottomTab"); // Ya "SignInScreen" agar chaaho
+  // };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create Account</Text>
-
-      <TextInput
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-        placeholderTextColor="#999"
-      />
 
       <TextInput
         placeholder="Email"
@@ -56,6 +63,14 @@ const SignUpScreen = () => {
         onChangeText={setPassword}
         secureTextEntry
         style={styles.input}
+        placeholderTextColor="#999"
+      />
+      <TextInput
+        placeholder="Confirm Password"
+        value={confimPassword}
+        onChangeText={setConfirmPassword}
+        style={styles.input}
+        secureTextEntry
         placeholderTextColor="#999"
       />
 
@@ -95,7 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 16,
     marginBottom: 20,
-    fontSize: 16,
+    fontSize: 14,
     borderColor: "#ccc",
     borderWidth: 1,
   },
