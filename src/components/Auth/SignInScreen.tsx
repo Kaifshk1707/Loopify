@@ -1,13 +1,55 @@
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import auth from "@react-native-firebase/auth";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithCredential,
+} from "@react-native-firebase/auth";
 
 const SignInScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+
+    GoogleSignin.configure({
+      webClientId:
+        "52991865686-gv3ucc6d7mf1n1piebssb2alp3p5r2h2.apps.googleusercontent.com",
+      scopes: ["profile", "email"],
+    });
+
+
+    // GoogleSignin.configure({
+    //   webClientId:
+    //     "52991865686-gv3ucc6d7mf1n1piebssb2alp3p5r2h2.apps.googleusercontent.com",
+    // });
+  }, []);
+
+async function onGoogleButtonPress() {
+  try {
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    await GoogleSignin.signIn();
+    const { idToken } = await GoogleSignin.getTokens();
+    console.log("======>",idToken);
+    navigation.navigate("MainAppBottomTab");
+    if (!idToken) {
+      throw new Error("No ID Token returned");
+    }
+
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    await auth().signInWithCredential(googleCredential);
+
+    Alert.alert("Login Successful");
+  } catch (error) {
+    console.error("Google Sign-In Error:", error);
+    Alert.alert("Login Failed", error.message);
+  }
+}
 
   const handleSignIn = () => {
     if (!email || !password) {
@@ -130,7 +172,7 @@ const SignInScreen = () => {
 
       <View style={{ flexDirection: "row", justifyContent: "center", gap: 20 }}>
         <TouchableOpacity
-          onPress={handleGoogleLogin}
+          onPress={onGoogleButtonPress}
           style={{
             width: 50,
             height: 50,
