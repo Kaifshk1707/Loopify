@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Modal,
   TouchableWithoutFeedback,
+  TextInput,
+  Share,
 } from "react-native";
 import React, { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
@@ -20,7 +22,6 @@ import {
   increaseLike,
 } from "../../store/homeReducers/homeReducer";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { MaterialIcons } from "@expo/vector-icons";
 import { globalColor } from "../../styles/globalColors";
 
 const HomeScreen = () => {
@@ -28,6 +29,7 @@ const HomeScreen = () => {
   const dispatch = useDispatch();
   const [likedPosts, setLikedPosts] = useState({});
   const [modal, setModal] = useState(false);
+  const [commentModal, setCommentModal] = useState(false);
 
   const increaseLikes = useSelector(
     (state) => state.increaseTotalLikes.totalLike
@@ -47,6 +49,20 @@ const HomeScreen = () => {
       [postId]: !isLiked,
     }));
   };
+
+  const handleShare = async (item) => {
+    try {
+      const result = await Share.share({
+        message: `Check out this post on Instagram-Clone!\n\n${
+          item.post_content || "Great post!"
+        }\n\nDownload Instagram: https://www.instagram.com/download/`,
+      });
+      
+    } catch (error) {
+      console.error("Error while sharing:", error.message);
+    }
+  };
+  
 
   const renderItem = ({ item }) => (
     <View
@@ -133,6 +149,7 @@ const HomeScreen = () => {
         </TouchableOpacity>
         {/* Comment */}
         <TouchableOpacity
+          onPress={() => setCommentModal(true)}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -146,6 +163,7 @@ const HomeScreen = () => {
         </TouchableOpacity>
         {/* Share */}
         <TouchableOpacity
+          onPress={() => handleShare(item)}
           style={{ flexDirection: "row", alignItems: "center" }}
         >
           <FontAwesome name="share" size={22} color="black" />
@@ -183,6 +201,7 @@ const HomeScreen = () => {
         onPressCheck={() => {}}
         onPressChat={() => navigation.navigate("ChatListScreen")}
       />
+      {/* Create Post Modal */}
       <Modal
         visible={modal}
         transparent
@@ -221,7 +240,12 @@ const HomeScreen = () => {
                 />
               </View>
               <Text
-                style={{ fontSize: 20, fontWeight: "bold", marginBottom: 15,alignSelf:"center" }}
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  marginBottom: 15,
+                  alignSelf: "center",
+                }}
               >
                 Create
               </Text>
@@ -258,7 +282,105 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </Modal>
 
-      <HomeStory />
+      {/* Comment Modal */}
+      <Modal
+        visible={commentModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setCommentModal(false)}
+      >
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => setCommentModal(false)}
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.4)",
+            justifyContent: "flex-end",
+          }}
+        >
+          <TouchableWithoutFeedback onPress={() => {}}>
+            <View
+              style={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                paddingTop: 10,
+                paddingBottom: 30,
+                paddingHorizontal: 20,
+                maxHeight: "80%",
+              }}
+            >
+              {/* Drag Indicator */}
+              <View style={{ alignItems: "center", marginBottom: 10 }}>
+                <View
+                  style={{
+                    width: 40,
+                    height: 5,
+                    backgroundColor: globalColor.lightGray,
+                    borderRadius: 3,
+                  }}
+                />
+              </View>
+
+              {/* Title */}
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  marginBottom: 15,
+                }}
+              >
+                Comments
+              </Text>
+
+              {/* Comment List (example placeholder) */}
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: "#888", textAlign: "center" }}>
+                  No comments yet.
+                </Text>
+              </View>
+
+              {/* Input Box (optional) */}
+              <View
+                style={{
+                  marginTop: 20,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  borderColor: globalColor.gray,
+                  borderRadius: 20,
+                  paddingHorizontal: 15,
+                  paddingVertical: 8,
+                }}
+              >
+                <TextInput
+                  placeholder="Write a comment..."
+                  style={{ flex: 1,fontSize: 16 }}
+                  onFocus={() => setCommentModal(true)}
+                  placeholderTextColor="#999"
+                />
+                <TouchableOpacity onPress={() => console.log("Send comment")}>
+                  <Text
+                    style={{
+                      color: globalColor.blueGray,
+                      fontSize: 16,
+                      fontWeight: "bold",
+                      marginLeft: 10,
+                    }}
+                  >
+                    Send
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+
+      <HomeStory onPress={() => navigation.navigate("StoryView")} />
+
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id.toString()}
@@ -269,18 +391,3 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
-
-// const postUrl = "https://dummyjson.com/posts";
-// const [posts, setPosts] = useState([]);
-// const getData = async () => {
-//   try {
-//     const response = await axios.get(postUrl);
-//     console.log("=======>>>>>>", response.data);
-//     setPosts(response.data.posts);
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//   }
-// };
-// useEffect(() => {
-//   getData();
-// }, []);

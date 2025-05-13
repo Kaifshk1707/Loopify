@@ -1,20 +1,26 @@
-import { View, Text, FlatList, Image } from "react-native";
-import React from "react";
+import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
+import React, { FC } from "react";
 import { posts } from "../../data/posts";
 import { globalColor } from "../../styles/globalColors";
 
-const HomeStory = () => {
+interface HomeStoryProps {
+  onPress: () => void;
+}
+
+const HomeStory: FC<HomeStoryProps> = ({ onPress }) => {
   const renderItem = ({ item }) => {
     return (
-      <View style={{ alignItems: "center", marginHorizontal: 8 }}>
-        {/* Story Circle with Image */}
+      <TouchableOpacity
+        onPress={onPress}
+        style={{ alignItems: "center", marginHorizontal: 8 }}
+      >
         <View
           style={{
             width: 70,
             height: 70,
             borderRadius: 35,
             borderWidth: 2,
-            borderColor: globalColor.red, 
+            borderColor: globalColor.red,
             justifyContent: "center",
             alignItems: "center",
             overflow: "hidden",
@@ -42,7 +48,7 @@ const HomeStory = () => {
         >
           {item.userName}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
